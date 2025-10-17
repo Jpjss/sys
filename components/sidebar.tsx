@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, LayoutDashboard, History, Settings } from "lucide-react"
+import { Bell, LayoutDashboard, History, Settings, Terminal } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SettingsDialog } from "./settings-dialog"
 
@@ -14,6 +14,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "alerts", label: "Alertas", icon: Bell },
     { id: "history", label: "Histórico", icon: History },
+    { id: "logs", label: "Logs", icon: Terminal },
     { id: "settings", label: "Configurações", icon: Settings },
   ]
 

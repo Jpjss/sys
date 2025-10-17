@@ -96,7 +96,7 @@ export function AlertsTable() {
                     {alert.status === "open" ? "Critical" : alert.status === "in_progress" ? "Unresolved" : "Resolved"}
                   </Badge>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground" suppressHydrationWarning>
                   {formatTime(alert.created_at)}
                 </td>
               </tr>

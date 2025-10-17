@@ -163,7 +163,7 @@ export function HistoryView() {
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <div>
                       <p className="text-xs text-muted-foreground">Criado em</p>
-                      <p className="text-foreground">
+                      <p className="text-foreground" suppressHydrationWarning>
                         {formatDate(alert.created_at)}
                       </p>
                     </div>
@@ -173,7 +173,7 @@ export function HistoryView() {
                     <Clock className="w-4 h-4 text-muted-foreground" />
                     <div>
                       <p className="text-xs text-muted-foreground">Tempo de resolução</p>
-                      <p className="text-foreground">
+                      <p className="text-foreground" suppressHydrationWarning>
                         {alert.resolved_at
                           ? calculateResolutionTime(alert.created_at, alert.resolved_at)
                           : "N/A"}

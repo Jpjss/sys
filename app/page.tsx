@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/sidebar"
 import { DashboardContent } from "@/components/dashboard-content"
 import { AlertsView } from "@/components/alerts-view"
 import { HistoryView } from "@/components/history-view"
+import { LogsView } from "@/components/logs-view"
 import { SettingsDialog } from "@/components/settings-dialog"
 
 export default function Home() {
@@ -27,6 +28,8 @@ export default function Home() {
         return <AlertsView />
       case "history":
         return <HistoryView />
+      case "logs":
+        return <LogsView />
       default:
         return <DashboardContent />
     }

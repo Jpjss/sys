@@ -102,7 +102,7 @@ export function AlertCard({ alert, onAlertUpdated }: AlertCardProps) {
             <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                {timeAgo}
+                <span suppressHydrationWarning>{timeAgo}</span>
               </div>
 
               {alert.assigned_to && (
@@ -123,7 +123,7 @@ export function AlertCard({ alert, onAlertUpdated }: AlertCardProps) {
                 {alert.resolved_by && (
                   <div>
                     <p className="text-xs font-medium text-muted-foreground mb-1">Resolvido por</p>
-                    <p className="text-sm text-foreground">
+                    <p className="text-sm text-foreground" suppressHydrationWarning>
                       {alert.resolved_by} em{" "}
                       {alert.resolved_at &&
                         formatDistanceToNow(new Date(alert.resolved_at), { addSuffix: true, locale: ptBR })}
