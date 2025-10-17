@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 
 // Mock data - em produção, conectar ao banco de dados real
 const mockAlerts = [
@@ -100,81 +100,49 @@ const mockAlerts = [
     resolved_by: "Ana Lima",
     resolved_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
   },
-  {
-    id: 8,
-    client_id: "CLI006",
-    client_name: "Tech Solutions",
-    alert_type: "backup_failed",
-    severity: "critical",
-    title: "Backup Incremental Falhou",
-    description: "Falha no backup incremental do banco de dados de produção.",
-    status: "open",
-    created_at: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-    assigned_to: null,
-    resolved_by: null,
-    resolved_at: null,
-  },
-  {
-    id: 9,
-    client_id: "CLI007",
-    client_name: "E-commerce Plus",
-    alert_type: "license_expiring",
-    severity: "medium",
-    title: "Licença SSL Expirando em 7 Dias",
-    description: "O certificado SSL do domínio principal expira em 7 dias.",
-    status: "open",
-    created_at: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
-    assigned_to: "Carlos Mendes",
-    resolved_by: null,
-    resolved_at: null,
-  },
-  {
-    id: 10,
-    client_id: "CLI003",
-    client_name: "Indústria Beta",
-    alert_type: "high_error_rate",
-    severity: "high",
-    title: "Erro 500 em Requisições HTTP",
-    description: "Taxa de erro 500 aumentou para 15% nas últimas 2 horas.",
-    status: "open",
-    created_at: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-    assigned_to: null,
-    resolved_by: null,
-    resolved_at: null,
-  },
 ]
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const status = searchParams.get("status")
-  const severity = searchParams.get("severity")
-  const search = searchParams.get("search")
+export async function GET() {
+  const now = new Date()
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
-  let filtered = [...mockAlerts]
+  // Calcular estatísticas
+  const openAlerts = mockAlerts.filter((a) => a.status === "open").length
+  const inProgress = mockAlerts.filter((a) => a.status === "in_progress").length
+  
+  // Resolvidos hoje
+  const resolvedToday = mockAlerts.filter((a) => {
+    if (a.status !== "resolved" || !a.resolved_at) return false
+    const resolvedDate = new Date(a.resolved_at)
+    return resolvedDate >= startOfToday
+  }).length
 
-  // Filter by status
-  if (status && status !== "all") {
-    filtered = filtered.filter((alert) => alert.status === status)
-  }
-
-  // Filter by severity
-  if (severity && severity !== "all") {
-    filtered = filtered.filter((alert) => alert.severity === severity)
-  }
-
-  // Filter by search
-  if (search) {
-    const searchLower = search.toLowerCase()
-    filtered = filtered.filter(
-      (alert) =>
-        alert.title.toLowerCase().includes(searchLower) ||
-        alert.client_name.toLowerCase().includes(searchLower) ||
-        alert.description.toLowerCase().includes(searchLower),
-    )
+  // Tempo médio de resolução (em minutos)
+  const resolvedAlerts = mockAlerts.filter((a) => a.status === "resolved" && a.resolved_at)
+  let avgResponseTime = "N/A"
+  
+  if (resolvedAlerts.length > 0) {
+    const totalMinutes = resolvedAlerts.reduce((sum, alert) => {
+      const created = new Date(alert.created_at).getTime()
+      const resolved = new Date(alert.resolved_at!).getTime()
+      return sum + (resolved - created) / (1000 * 60)
+    }, 0)
+    
+    const avgMinutes = Math.round(totalMinutes / resolvedAlerts.length)
+    
+    if (avgMinutes < 60) {
+      avgResponseTime = `${avgMinutes}min`
+    } else {
+      const hours = Math.floor(avgMinutes / 60)
+      const minutes = avgMinutes % 60
+      avgResponseTime = `${hours}h ${minutes}min`
+    }
   }
 
   return NextResponse.json({
-    alerts: filtered,
-    total: filtered.length,
+    openAlerts,
+    inProgress,
+    resolvedToday,
+    avgResponseTime,
   })
 }

@@ -2,12 +2,25 @@ import { AlertTriangle, CheckCircle2, Clock, TrendingUp } from "lucide-react"
 import { Card } from "@/components/ui/card"
 
 async function getStats() {
-  // Em produção, buscar do banco de dados
-  return {
-    openAlerts: 12,
-    inProgress: 5,
-    resolvedToday: 23,
-    avgResponseTime: "18min",
+  try {
+    const response = await fetch("http://localhost:3000/api/alerts/stats", {
+      cache: "no-store", // Sempre buscar dados atualizados
+    })
+    
+    if (!response.ok) {
+      throw new Error("Falha ao buscar estatísticas")
+    }
+    
+    return await response.json()
+  } catch (error) {
+    console.error("Erro ao buscar estatísticas:", error)
+    // Fallback em caso de erro
+    return {
+      openAlerts: 0,
+      inProgress: 0,
+      resolvedToday: 0,
+      avgResponseTime: "N/A",
+    }
   }
 }
 

@@ -1,5 +1,3 @@
-"use client"
-
 import { Bell, Settings, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,7 +12,7 @@ export function DashboardHeader() {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Bell className="w-5 h-5 text-primary-foreground" />
               </div>
-              <div className="text-xl font-semibold text-foreground">Sistema de Alertas</div>
+              <h1 className="text-xl font-semibold text-foreground">Sistema de Alertas</h1>
             </div>
           </div>
 
